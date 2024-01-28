@@ -1,0 +1,26 @@
+{
+  "name": "solo_leveling_scraper",
+  "version": "1.0.0",
+  "description": "Scrapes Solo Leveling manwha images",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cameron-Porter/solo-leveling-scraper.git"
+  },
+  "author": "Cameron Porter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Cameron-Porter/solo-leveling-scraper/issues"
+  },
+  "homepage": "https://github.com/Cameron-Porter/solo-leveling-scraper#readme",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "cheerio": "^1.0.0-rc.12",
+    "express": "^4.18.2",
+    "nodemon": "^3.0.3"
+  }
+}
