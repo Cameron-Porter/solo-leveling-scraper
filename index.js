@@ -3,16 +3,18 @@ const cheerio = require("cheerio");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 
-const url = "https://www.solo-leveling-manhwa.com/solo-leveling-chapter-0";
+const url = "https://www.solo-leveling-manhwa.com/solo-leveling-chapter-";
 
-axios(url)
-  .then((result) => {
-    // need to capture the h1 text in a single variable
+for (let i=0; i < 201; i++) {
+let newURL = url + i
+axios(newURL)
+  .then(async (result) => {
+    // capture the h1 text in a single variable
     const html = result.data;
     const $ = cheerio.load(html);
     const title = $("h1").text();
 
-    // need to capture all image urls that contain imgur in url
+    // capture all image urls that contain imgur in url
     const imgUrls = [];
     $("img").each(function () {
       const img = $(this).attr("src");
@@ -21,41 +23,17 @@ axios(url)
       }
     });
 
-    // need to download all images to local folder
+    // download all images to local folder
     for (let i = 0; i < imgUrls.length; i++) {
-      downloadImage(imgUrls[i], i);
+      await downloadImage(imgUrls[i], i);
     }
-    // need to convert to pdf
+    // convert to pdf
     addImagesToPDF("./images", title);
-    //convertToPDF(title, imgUrls);
   })
   .catch((err) => {
     console.log("Error: ", err);
   });
-
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-const convertToPDF = async (title) => {
-  const doc = new PDFDocument();
-  const pdfStream = fs.createWriteStream(`${title}.pdf`);
-  doc.pipe(pdfStream);
-
-  const imgPaths = grabDownloadedFiles();
-  for (let i = 0; i < imgPaths.length; i++) {
-    console.log(`Adding ${imgPaths[i]} to PDF...`);
-    addImageToPDF(`./images/${imgPaths[i]}`, `${title}.pdf`);
-  }
-
-  doc.end();
-
-  pdfStream.on("finish", () => {
-    console.log(`PDF ${title}.pdf created successfully!`);
-  });
-
-  pdfStream.on("error", (error) => {
-    console.error(`Error creating PDF: ${error}`);
-  });
-};
+}
 
 const downloadImage = async (image, index) => {
   let base = 100;
@@ -69,24 +47,6 @@ const downloadImage = async (image, index) => {
     console.log(`Downloaded ${image} to ${path}`);
   } catch (error) {
     console.error(`Error downloading ${image}: ${error.message}`);
-  }
-};
-
-const grabDownloadedFiles = () => {
-  try {
-    // Specify the path to the folder
-    const folderPath = "./images"; // Update this to your folder path
-
-    // Read the contents of the folder synchronously
-    const files = fs.readdirSync(folderPath);
-
-    // Log the names of files in the folder
-    console.log("Files in the folder:", files);
-
-    return files; // Return the array of file names
-  } catch (err) {
-    console.error("Error reading folder:", err);
-    throw err; // Throw the error for handling in the calling code
   }
 };
 
